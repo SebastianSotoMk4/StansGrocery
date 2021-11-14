@@ -9,47 +9,38 @@ Option Strict On
 Option Explicit On
 Public Class StansGroceryForm
     Dim fileName As String = "..\..\Grocery.txt"
-    Dim groceryData(199, 3) As String
-    Dim tempList As New List(Of String)
-    Dim cleanGroceryData(199, 3) As String
+    Dim groceryData(300, 2) As String
 
-
-    Sub SampleTxt()
-        Dim currentRecord As String
-        FileOpen(1, "Grocery.txt", OpenMode.Input)
-        Do Until EOF(1)
-            Input(1, currentRecord)
-            ProductListBox.Text = currentRecord
-            'Console.WriteLine(currentRecord)
-        Loop
-        FileClose(1)
-    End Sub
     'sets defaults when loaded or called
     Sub Defaults()
-        AisleRadioButton.Checked = True
+        CategoryRadioButton.Checked = True
     End Sub
-    'Needs to ask to open a file
-    Sub ReadFile2()
-        'Clear listbox each time called for neatness
-        ProductListBox.Items.Clear()
-        Dim currentLine As String
-        Dim temp() As String
-        Dim itemNo As Integer
-        Try
-            FileOpen(1, Me.fileName, OpenMode.Input)
-            Do Until EOF(1)
-                For lineNumber = 0 To 3
-                    Input(1, currentLine)
-                    Me.groceryData(itemNo, lineNumber) = currentLine
 
-                Next
-                itemNo += 1
-            Loop
-            FileClose(1)
-        Catch ex As Exception
-            ' ask to choose a file 
-            MsgBox($"no file ???")
-        End Try
+
+
+    'keep
+    Private Sub SearchButton_Click() Handles SearchButton.Click
+        ReadArray(SearchTextBox.Text)
+    End Sub
+    Sub ReadArray(searchWord As String)
+        Dim tempItem() As String
+        Dim jankRecord As String
+
+        ProductListBox.Items.Clear()
+
+        For i = LBound(Me.groceryData) To UBound(Me.groceryData)
+            jankRecord = ($"{groceryData(i, 0)} {groceryData(i, 1)} {groceryData(i, 2)} ")
+
+            tempItem = Split(groceryData(i, 0), "$$ITM")
+            Try
+                Console.WriteLine(tempItem(1))
+                If InStr(jankRecord, searchWord, CompareMethod.Text) > 0 Then
+                    ProductListBox.Items.Add($"{tempItem(1)}")
+                End If
+            Catch ex As Exception
+                Console.WriteLine("oops")
+            End Try
+        Next
     End Sub
     Sub ReadFile()
         'Clear listbox each time called for neatness
@@ -60,57 +51,114 @@ Public Class StansGroceryForm
         Try
             FileOpen(1, Me.fileName, OpenMode.Input)
             Do Until EOF(1)
-                For lineNumber = 0 To 3
+                For lineNumber = 0 To 2
+
                     Input(1, currentLine)
                     Me.groceryData(itemNo, lineNumber) = currentLine
-                    SeperateRecords(currentLine)
+
                 Next
                 itemNo += 1
             Loop
             FileClose(1)
         Catch ex As Exception
-            ' ask to choose a file 
-            MsgBox($"no file ???")
+
+            If OpenFileDialog.ShowDialog() <> DialogResult.Cancel Then
+                Me.fileName = OpenFileDialog.FileName
+                ReadFile()
+            Else
+                Me.Close()
+            End If
         End Try
     End Sub
-
-    Sub DisplayFile()
-        Dim writeLine As String
-        ProductListBox.Items.Clear()
-
-        For i = LBound(groceryData) To UBound(groceryData)
-            writeLine = groceryData(i, 0) + groceryData(i, 1) + groceryData(i, 2)
-            ProductListBox.Items.Add($"{writeLine}")
-        Next
-    End Sub
-    Function SeperateRecords(ByVal record As String) As String
-        Dim temp() As String
-        Dim readLable() As String
-        temp = Split(record, ",")
-
-        Try
-
-            readLable = Split(temp(0), "$$")
-
-        Catch
-
-            readLable = Split(temp(1), "##")
-
-        Catch
-
-            readLable = Split(temp(2), "%%")
-
-        End Try
-
-
-    End Function
-
-    Private Sub SearchButton_Click(sender As Object, e As EventArgs) Handles SearchButton.Click
+    Private Sub StansGroceryForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ReadFile()
-        DisplayFile()
-
+        Defaults()
     End Sub
+    'Check Speling Deimiter
+    Private Sub FilterSelect() Handles AisleRadioButton.CheckedChanged, CategoryRadioButton.CheckedChanged
+        Dim temp() As String
+        Dim delimiter As String
+        Dim index As Integer
+        Select Case True
+            Case AisleRadioButton.Checked
+                delimiter = "##LOC"
+                index = 1
+            Case CategoryRadioButton.Checked
+                delimiter = "%%CAT"
+                index = 2
+        End Select
+        FilterComboBox.Items.Clear()
+        For i = LBound(groceryData) To UBound(groceryData)
+            Try
+                temp = Split(groceryData(i, index), delimiter)
+                'FilterComboBox.Items.Add(temp)
+                If FilterComboBox.Items.Contains(temp(1).PadLeft(2)) = False And temp(1) <> "" Then
+                    FilterComboBox.Items.Add(temp(1).PadLeft(2))
 
+                End If
+            Catch ex As Exception
+
+            End Try
+        Next
+        FilterComboBox.Sorted = True
+    End Sub
+    Private Sub FilterComboBox_SelectedIndexChanged() Handles FilterComboBox.SelectedIndexChanged
+        ReadArray(FilterComboBox.Text)
+    End Sub
 End Class
 ' How do i Open a fileDialog?? previous methods are not working.
-' 
+
+
+'    'Function SeperateRecords(ByVal record As String) As String
+'    Dim temp() As String
+'    Dim readLable() As String
+'    temp = Split(record, ",")
+
+'    For i = UBound(groceryData) To LBound(groceryData)
+'        Select Case groceryData(0, i)
+'            Case groceryData(0, i)
+'                readLable = Split(temp(0), "$$")
+'            Case groceryData(1, i)
+'                readLable = Split(temp(1), "##")
+'            Case groceryData(2, i)
+'                readLable = Split(temp(2), "%%")
+'        End Select
+
+
+'    Next
+'End Function
+
+'Sub SeperateGrocerys()
+'    Dim temp() As String
+'    Dim readLable() As String
+
+'    For i = UBound(Me.groceryData) To LBound(Me.groceryData)
+'        readLable = Split(temp(0), "$$")
+'        'Me.cleanGroceryData(0, i) = readLable
+'    Next
+
+'End Sub
+
+
+'keep
+'Sub DisplayFile()
+'    Dim writeLine As String
+'    ProductListBox.Items.Clear()
+'    For i = LBound(groceryData) To UBound(groceryData)
+'        writeLine = groceryData(i, 0) + groceryData(i, 1) + groceryData(i, 2)
+'        ProductListBox.Items.Add($"{writeLine}")
+'    Next
+'End Sub
+'Sub NewReadFile()
+'    Dim currentLine As String
+'    Dim itemNo As Integer
+'    Try
+'        FileOpen(1, Me.fileName, OpenMode.Input)
+'        Do Until EOF(1)
+'            Input(1, currentLine)
+'            tempList.Add($"{currentLine}")
+'        Loop
+'        FileClose(1)
+'    Catch ex As Exception
+'    End Try
+'End Sub
