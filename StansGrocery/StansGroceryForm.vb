@@ -20,7 +20,11 @@ Public Class StansGroceryForm
 
     'keep
     Private Sub SearchButton_Click() Handles SearchButton.Click
-        ReadArray(SearchTextBox.Text)
+        If SearchTextBox.Text = "zzz" Then
+            Me.Close()
+        Else
+            ReadArray(SearchTextBox.Text)
+        End If
     End Sub
     Sub ReadArray(searchWord As String)
         Dim tempItem() As String
@@ -104,6 +108,10 @@ Public Class StansGroceryForm
     End Sub
     Private Sub FilterComboBox_SelectedIndexChanged() Handles FilterComboBox.SelectedIndexChanged
         ReadArray(FilterComboBox.Text)
+    End Sub
+
+    Private Sub ProductListBox_Click() Handles ProductListBox.Click
+
     End Sub
 End Class
 ' How do i Open a fileDialog?? previous methods are not working.
