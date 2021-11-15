@@ -46,6 +46,7 @@ Partial Class StansGroceryForm
         Me.SearchToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ResetButton = New System.Windows.Forms.Button()
         Me.FilterByGroupBox.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -213,12 +214,22 @@ Partial Class StansGroceryForm
         Me.ExitToolStripMenuItem1.Size = New System.Drawing.Size(109, 22)
         Me.ExitToolStripMenuItem1.Text = "Exit"
         '
+        'ResetButton
+        '
+        Me.ResetButton.Location = New System.Drawing.Point(191, 336)
+        Me.ResetButton.Name = "ResetButton"
+        Me.ResetButton.Size = New System.Drawing.Size(130, 51)
+        Me.ResetButton.TabIndex = 10
+        Me.ResetButton.Text = "Reset"
+        Me.ResetButton.UseVisualStyleBackColor = True
+        '
         'StansGroceryForm
         '
         Me.AcceptButton = Me.SearchButton
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(668, 400)
+        Me.Controls.Add(Me.ResetButton)
         Me.Controls.Add(Me.SearchButton)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
@@ -267,4 +278,5 @@ Partial Class StansGroceryForm
     Friend WithEvents SearchToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ExitToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents ResetButton As Button
 End Class
