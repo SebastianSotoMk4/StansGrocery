@@ -43,13 +43,24 @@ Public Class StansGroceryForm
 
     Function DisplayLOC(SearchWord As String) As String
         Dim desiredItemLoc As String
+        Dim loopNumber As Integer = 0
 
         Do Until desiredItemLoc = SearchWord
-            For i = LBound(cleanData) To UBound(cleanData)
-                desiredItemLoc = cleanData(i, 1)
-            Next
+            Try
+
+                desiredItemLoc = cleanData(loopNumber, 1)
+                loopNumber += 1
+            Catch ex As Exception
+
+            End Try
+
+
+
         Loop
+        loopNumber = 0
+        Me.Text = desiredItemLoc
         Return desiredItemLoc
+        desiredItemLoc = ""
     End Function
 
 
@@ -173,10 +184,10 @@ Public Class StansGroceryForm
 
 
     Private Sub ProductListBox_Click() Handles ProductListBox.Click
-        Me.Text = DisplayLOC(ProductListBox.SelectedItem.ToString())
+        'Me.Text = DisplayLOC(ProductListBox.SelectedItem.ToString())
         Try
             If ProductListBox.SelectedItem.ToString() <> Nothing Then
-                Label3.Text = ($" You will find {ProductListBox.SelectedItem.ToString()} on aisle {DisplayLOC(SearchTextBox.Text)} ")
+                Label3.Text = ($" You will find {ProductListBox.SelectedItem.ToString()} on aisle") '{DisplayLOC(SearchTextBox.Text)} ")
 
             End If
         Catch ex As Exception
